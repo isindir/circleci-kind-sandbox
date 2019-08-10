@@ -23,7 +23,7 @@ jobs:
             mv ./kubectl bin
             export PATH=$PWD/bin:$PATH
             kind create cluster
-            export KUBECONFIG="$(kind get kubeconfig-path)"
+            export KUBECONFIG="$(kind get kubeconfig-path --name="kind")"
             kubectl cluster-info
             kubectl get nodes -o wide
             kubectl version
