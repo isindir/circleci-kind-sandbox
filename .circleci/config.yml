@@ -2,7 +2,7 @@ version: 2
 
 jobs:
   build:
-    #working_directory: /go/src/github.com/isindir/circleci-kind-sandbox
+    working_directory: /go/src/github.com/isindir/circleci-kind-sandbox
     docker:
       - image: circleci/golang:1.12.7-stretch
     steps:
@@ -14,3 +14,14 @@ jobs:
       - setup_remote_docker:
           version: 18.09.3
           docker_layer_caching: true
+      - run:
+          name: Run Kube cluster
+          command: |
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            mv ./kubectl /opt/bin
+            kind create cluster
+            export KUBECONFIG="$(kind get kubeconfig-path)"
+            kubectl cluster-info
+            kubectl get nodes -o wide
+            kind delete cluster
