@@ -22,7 +22,7 @@ jobs:
             mkdir bin
             mv ./kubectl bin
             export PATH=$PWD/bin:$PATH
-            kind create cluster
+            kind create cluster --loglevel error
             export KUBECONFIG="$(kind get kubeconfig-path --name="kind")"
             kubectl cluster-info
             kubectl get nodes -o wide
