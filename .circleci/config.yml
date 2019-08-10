@@ -4,8 +4,7 @@ jobs:
   build:
     working_directory: /go/src/github.com/isindir/circleci-kind-sandbox
     docker:
-      - image: golang:1.12.7-stretch
-
+      - image: circleci/golang:1.12.7-stretch
     steps:
       - checkout
       - setup_remote_docker:
