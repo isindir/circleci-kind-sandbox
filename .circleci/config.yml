@@ -1,0 +1,23 @@
+version: 2
+
+jobs:
+  build:
+    working_directory: /go/src/github.com/isindir/circleci-kind-sandbox
+    docker:
+      - image: golang:1.12.7-stretch
+
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 18.09.3
+          docker_layer_caching: true
+      - run:
+          name: Install kind
+          command: |
+            GO111MODULE="on" go get sigs.k8s.io/kind@v0.4.0
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build
