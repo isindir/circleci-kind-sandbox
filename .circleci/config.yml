@@ -3,26 +3,29 @@ version: 2
 jobs:
   build:
     working_directory: /go/src/github.com/isindir/circleci-kind-sandbox
-    docker:
-      - image: circleci/golang:1.12.7-stretch
+    machine: true
+    #docker:
+    #  - image: circleci/golang:1.12.7-stretch
     steps:
       - checkout
       - run:
-          name: Install kind
+          name: Install tools
           command: |
-            GO111MODULE="on" go get sigs.k8s.io/kind@v0.4.0
-      - setup_remote_docker:
-          version: 18.09.3
-          docker_layer_caching: true
+            #GO111MODULE="on" go get sigs.k8s.io/kind@v0.4.0
+            mkdir bin
+            curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+            chmod +x ./kubectl
+            curl -Lo kind https://github.com/kubernetes-sigs/kind/releases/download/v0.4.0/kind-linux-amd64
+            chmod +x ./kind
+            mv ./kubectl ./kind bin/
+      #- setup_remote_docker:
+      #    version: 18.09.3
+      #    docker_layer_caching: true
       - run:
           name: Run Kube cluster
           command: |
-            curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
-            chmod +x ./kubectl
-            mkdir bin
-            mv ./kubectl bin
             export PATH=$PWD/bin:$PATH
-            kind create cluster --loglevel error
+            kind create cluster
             export KUBECONFIG="$(kind get kubeconfig-path --name="kind")"
             kubectl cluster-info
             kubectl get nodes -o wide
