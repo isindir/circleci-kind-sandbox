@@ -2,7 +2,7 @@ version: 2
 
 jobs:
   build:
-    working_directory: /go/src/github.com/isindir/circleci-kind-sandbox
+    #working_directory: /go/src/github.com/isindir/circleci-kind-sandbox
     machine: true
     #docker:
     #  - image: circleci/golang:1.12.7-stretch
@@ -22,8 +22,15 @@ jobs:
       #    version: 18.09.3
       #    docker_layer_caching: true
       - run:
+          name: Info
+          command: |
+            pwd
+            echo
+            ls -lart
+      - run:
           name: Run Kube cluster
           command: |
+            pwd
             export PATH=$PWD/bin:$PATH
             kind create cluster
             export KUBECONFIG="$(kind get kubeconfig-path --name="kind")"
